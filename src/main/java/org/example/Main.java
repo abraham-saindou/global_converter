@@ -4,58 +4,110 @@ import java.util.*;
 
 public class Main {
     String spe_character = "!$%&?@&#'{([-|`_^]}=£*";
+    boolean arrow = false;
+
+
     public static void main(String[] args) {
-        convert_to_ascii();
+        Main myObj = new Main();
+        ascii_to_other tohex = new ascii_to_other();
+
+        WordResult result = mkword();
+        List<Character> charList = result.getCharList(); String choice = result.getChoice();
+        String value;
+        List<Character> n = checkword(charList);
+        List<Integer> j = create_ascii(n);
+        StringBuilder wordtotranslate  = new StringBuilder(); StringBuilder translate_word = new StringBuilder();
+
+        switch (choice){
+            case "-h":
+                for (int i = 0; i < j.size(); ++i){
+                    int val = j.get(i);
+                    String newest = ascii_to_other.asciiToHexa(val);
+                    wordtotranslate.append(n.get(i));
+                    translate_word.append(newest).append(" ");
+                }
+                System.out.println(wordtotranslate);
+                System.out.println(translate_word);
+
+                break;
+            case "-o":
+                for (int i = 0; i < j.size(); ++i){
+                    int val = j.get(i);
+                    String newest = ascii_to_other.asciiToOctal(val);
+                    wordtotranslate.append(n.get(i));
+                    translate_word.append(newest).append(" ");
+                }
+                System.out.println(wordtotranslate);
+                System.out.println(translate_word);
+                break;
+            case "-b":
+                for (int i = 0; i < j.size(); ++i){
+                    int val = j.get(i);
+                    String newest = ascii_to_other.asciiToBinary(val);
+                    wordtotranslate.append(n.get(i));
+                    translate_word.append(newest).append(" ");
+                }
+                System.out.println(wordtotranslate);
+                System.out.println(translate_word);
+                break;
+            case "-d":
+                for (int i = 0; i < j.size(); ++i){
+                    int val = j.get(i);
+                    int newest = ascii_to_other.letterToAscii(n.get(i));
+                    wordtotranslate.append(n.get(i));
+                    translate_word.append(newest).append(" ");
+                }
+                System.out.println(wordtotranslate);
+                System.out.println(translate_word);
+                break;
+            case "-t":
+                break;
+        }
+
     }
-    public static List<Character> mkword(){
+    public static WordResult mkword(){
         Scanner input = new Scanner(System.in);
-        System.out.print("Enter a string to translate : ");
-        String word = input.nextLine();
         List<Character> charList = new ArrayList<>();
+
+        String word, choice;
+        System.out.println("Bienvenue au global converter ecrivez qqch contenant uniquement lettres et chiffres, et choisissez son type de sortie parmi : ");
+        System.out.print("-o pour octal, -h pour hexadecimal, -b pour binary, -d pour decimal text");
+        System.out.println("Saisir : ");
+
+        word = input.next(); choice = input.next();
 
         for (int i = 0; i < word.length(); ++i){
             charList.add(word.charAt(i));
         }
-
         System.out.println(charList);
-        return charList;
+        return new WordResult(charList, choice);
     }
 
-    public static List<Character> checkword(){
-        boolean arrow = false;
+    public static List<Character> checkword(List<Character> list){
         Main myObj = new Main();
-        List<Character> wordtoconvert = mkword();
-
-        for (Character character : wordtoconvert) {
+        for (Character character : list) {
             for (int j = 0; j < myObj.spe_character.length(); ++j) {
                 if (character == myObj.spe_character.charAt(j)) {
-                    System.out.println("This character " + myObj.spe_character.charAt(j) + " is in your word. Try a new word");
+                    System.out.println("Ce caractère " + myObj.spe_character.charAt(j) + " est dans votre mot. Veuillez recommencer.");
                     mkword();
                 } else {
-                    System.out.println("Your word to analyze is good.");
-                    arrow = true;
+                    System.out.println("Votre mot est correct.");
+                    myObj.arrow = true;
                     break;
                 }
             }
-            if (arrow) {
+            if (myObj.arrow) {
                 break;
             }
         }
-        return wordtoconvert;
+        return list;
     }
-    public static Map<Character, Integer> convert_to_ascii(){
-        List<Character> list = checkword();
-
-        Scanner input = new Scanner(System.in);
-        System.out.println("Which base do you want to convert your word into ?");
-        System.out.println("a for octal, b for hexadecimal, c for binary and d for text");
-        String choice = input.next();
-
-        Map<Character, Integer> map1 = new LinkedHashMap<>();
-
+    public static List<Integer> create_ascii(List<Character> list){
+        List<Integer> map1 = new ArrayList<>();
+        Main myObj = new Main();
         for (int i = 0; i < list.size(); ++i){
-            int ascii = list.get(i);
-            map1.put(list.get(i), ascii);
+            int n = list.get(i);
+            map1.add(n);
         }
         System.out.println(map1);
         return map1;
